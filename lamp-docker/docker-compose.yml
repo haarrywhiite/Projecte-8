@@ -1,0 +1,53 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    networks:
+      - lamp-network
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: exemple
+      MYSQL_USER: usuari
+      MYSQL_PASSWORD: contrasenya
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+    networks:
+      - lamp-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8081:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lamp-network
+
+networks:
+  lamp-network:
+    driver: bridge
