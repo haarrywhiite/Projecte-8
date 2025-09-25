@@ -7,5 +7,3 @@ Entorn LAMP amb Docker Compose: web (PHP), MySQL i phpMyAdmin.
 2. Visita `http://localhost:8080` i `http://localhost:8081` (usuari: `root`, contrasenya: `root`).
 3. Atura amb `docker compose down`.
 
-## Notes
-- Base de dades: `exemple`, usuari: `usuari`, contrasenya: `contrasenya`.
